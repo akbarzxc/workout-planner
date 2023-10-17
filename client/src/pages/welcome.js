@@ -1,7 +1,8 @@
 import React from "react";
 import WelcomeLayout from "../components/welcomeLayout";
+import { SignInButton } from "@clerk/clerk-react";
 
-export default function WelcomePage() {
+export default function Welcome() {
   return (
     <WelcomeLayout>
       <section className="container grid items-center justify-center gap-6 pt-6 pb-8 md:pt-10 md:pb-12 lg:pt-16 lg:pb-24">
@@ -13,9 +14,12 @@ export default function WelcomePage() {
             Create balanced workouts set towards your goals!
           </p>
           <div className="flex gap-4">
-            <button className="relative inline-flex h-11 items-center rounded-md border border-transparent bg-slate-900 px-8 py-2 font-medium text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
+            <SignInButton
+              className="relative inline-flex h-11 items-center rounded-md border border-transparent bg-slate-900 px-8 py-2 font-medium text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+              redirectUrl="/dashboard"
+            >
               Get Started
-            </button>
+            </SignInButton>
           </div>
         </div>
       </section>

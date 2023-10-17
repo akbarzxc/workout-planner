@@ -1,4 +1,5 @@
 import React from "react";
+import { SignInButton } from "@clerk/clerk-react";
 
 export default function WelcomeLayout(props) {
   return (
@@ -11,9 +12,12 @@ export default function WelcomeLayout(props) {
               Voima
             </span>
           </div>
-          <button className="relative inline-flex h-8 items-center rounded-md border border-transparent bg-slate-900 px-6 py-1 text-sm font-medium text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2">
+          <SignInButton
+            className="relative inline-flex h-8 items-center rounded-md border border-transparent bg-slate-900 px-6 py-1 text-sm font-medium text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2"
+            redirectUrl="/dashboard"
+          >
             Sign In
-          </button>
+          </SignInButton>
         </div>
       </header>
       <main className="flex-1">{props.children}</main>

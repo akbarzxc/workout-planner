@@ -1,28 +1,76 @@
 import React from "react";
-import WelcomePage from "./pages/welcomePage";
+
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  RedirectToSignIn,
+} from "@clerk/clerk-react";
+
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+
 import SiteLayout from "./components/siteLayout";
-
-import { Routes, Route } from "react-router-dom";
-import DashboardPage from "./pages/dashboardPage";
+import Welcome from "./pages/welcome";
+import DashboardPage from "./pages/dashboard";
 import WorkoutPlanner from "./pages/workoutPlanner";
+import NotFound from "./pages/notFound";
 
-function App() {
+if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
+const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
+
+function ClerkProviderWithRoutes() {
+  const navigate = useNavigate();
+
   return (
-    <div className="App">
+    <ClerkProvider publishableKey={clerkPubKey} navigate={(to) => navigate(to)}>
       <Routes>
         <Route
           path="/"
           element={
             <SiteLayout>
-              <WelcomePage />
+              <Welcome />
             </SiteLayout>
           }
         />
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="workoutplan" element={<WorkoutPlanner />} />
+        <Route
+          path="/dashboard"
+          element={
+            <>
+              <SignedIn>
+                <DashboardPage />
+              </SignedIn>
+              <SignedOut>
+                <RedirectToSignIn />
+              </SignedOut>
+            </>
+          }
+        />
+        <Route
+          path="/workoutplan"
+          element={
+            <>
+              <SignedIn>
+                <WorkoutPlanner />
+              </SignedIn>
+              <SignedOut>
+                <RedirectToSignIn />
+              </SignedOut>
+            </>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
-    </div>
+    </ClerkProvider>
   );
 }
 
+function App() {
+  return (
+    <BrowserRouter>
+      <ClerkProviderWithRoutes />
+    </BrowserRouter>
+  );
+}
 export default App;
