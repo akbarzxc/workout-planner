@@ -1,14 +1,13 @@
 .env
-#npm
+# npm
 node_modules
 package-lock.json
 *.log
 *.gz
 
-#coveralls 
+# Coveralls
 .nyc_output
 coverage
 
-#benchmarking
-
+# Benchmarking
 benchmarks/graphs

@@ -4,15 +4,13 @@ const cors = require('cors')
 const port = 3001
 
 app.use(cors())
-
 const morgan = require('./middleware/morganMiddleware')
-
 app.use(morgan)
 
 const testRouter = require('./routes/test')
-const userRouter = require('./routes/user')
+const muscleGroupRouter = require('./routes/muscleGroup')
 
 app.use('/test', testRouter)
-app.use ('/users', userRouter)
+app.use ('/musclegroups', muscleGroupRouter)
 
 app.listen(port, () => console.log(`App listening on port ${port}`))
