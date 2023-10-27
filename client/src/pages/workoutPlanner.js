@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useClerk, useAuth } from '@clerk/clerk-react';
 
-import { getMuscleGroups } from '../services/muscleGroupService'
+import muscleGroupService from '../services/muscleGroupService'
 
 export default function WorkoutPlanner() {
     const [muscleGroups, setMuscleGroups] = useState([])
     const [error, setError] = useState(null)
 
+    const { getToken } = useAuth();
+    const service = muscleGroupService();
+
     useEffect(() => {
-      getMuscleGroups()
-      .then(data => {
-        setMuscleGroups(data)
-      })
-      .catch(err => {
-        setError(err)
-      })
-    }, [])
+      const fetchData = async () => {
+        try {
+          const token = await getToken();
+          const data = await service.getMuscleGroups(token);
+          setMuscleGroups(data);
+        } catch (err) {
+          setError(err);
+        }
+      };
+    
+      fetchData();
+    }, []);
 
   return (
     <div>
