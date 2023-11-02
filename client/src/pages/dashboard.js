@@ -32,7 +32,7 @@ export default function Dashboard() {
     fetchUserToken();
   }, []);
 
-  const { user } = useUser()
+  const { user } = useUser();
   const firstName = user.firstName //user.id for id
 
   return (
