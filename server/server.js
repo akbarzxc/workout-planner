@@ -14,8 +14,10 @@ app.use(ClerkExpressRequireAuth());
 
 //Routers
 const muscleGroupRouter = require('./routes/muscleGroup');
+const workoutPlanningRouter = require('./routes/workoutPlanning');
 
 //Endpoints
 app.use('/musclegroups', muscleGroupRouter)
+app.use('/workoutplan', workoutPlanningRouter)
 
 app.listen(port, () => console.log(`App listening on port ${port}`))
