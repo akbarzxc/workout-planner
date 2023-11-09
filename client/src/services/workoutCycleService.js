@@ -4,9 +4,7 @@ const workoutCycleService = () => {
   const getWorkoutCycle = async (sessionToken, userID) => { 
     try {
     setSessionToken(sessionToken)
-    const response = await api.post('/workoutplan/cycle', {
-        userID: userID
-    });
+    const response = await api.get(`/workoutplan/cycle/${userID}`);
     return response.data
 
     } catch(error) {
