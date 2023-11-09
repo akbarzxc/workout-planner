@@ -39,7 +39,7 @@ export default function WorkoutPlanner() {
       <h1>Your workout cycle {workoutCycle?.name}</h1>
       <h2>Choose your target muscle groups:</h2>
       <ul>
-        {muscleGroups.map(muscleGroup => (
+        {muscleGroups?.map(muscleGroup => (
           <li key={muscleGroup.muscle_group_id}>{muscleGroup.name}</li>
         ))}
       </ul>
