@@ -15,13 +15,13 @@ export default function WorkoutMovement() {
   };
   // Round 25
   return (
-    <div className="flex flex-col bg-white px-4 py-2 my-2 rounded-2xl">
+    <button className="flex flex-col bg-white px-4 py-2 my-2 rounded-2xl hover:bg-slate-50">
       <div>{test_props.name}</div>
       <div>
         {test_props.affectedMuscles.map((item, index) => (
           <div key={index}>{item.name}</div>
         ))}
       </div>
-    </div>
+    </button>
   );
 }

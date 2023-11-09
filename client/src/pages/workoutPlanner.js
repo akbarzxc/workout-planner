@@ -8,9 +8,8 @@ var test_props = {
 };
 
 export default function WorkoutPlanner() {
-  // >
   return (
-    <div className="flex min-h-screen flex-col items-center  mx-10">
+    <div className="min-h-screen mx-auto flex flex-col items-center gap-4 sm:w-[100%] md:w-[90%] lg:w-[80%]">
       <div className="flex w-full items-center justify-between py-4 space-x-20">
         <div className="flex w-2/5 justify-start items-center space-x-4">
           <Link
@@ -25,8 +24,9 @@ export default function WorkoutPlanner() {
           </h1>
         </div>
         <div className="flex w-3/5 justify-end space-x-10">
-          <div>placeholder_Saved</div>
-          <div>placeholder_Edit</div>
+          <button className="relative inline-flex h-8 items-center rounded-md border border-transparent bg-slate-800 px-6 py-1 text-sm font-medium text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2">
+            Edit Goals
+          </button>
         </div>
       </div>
       <WorkoutCycle />
