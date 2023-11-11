@@ -13,14 +13,19 @@ app.use(morgan)
 app.use(ClerkExpressRequireAuth());
 
 //Routers
+const userRouter = require('./routes/user')
 const muscleGroupRouter = require('./routes/muscleGroup');
-const workoutplanRouter = require('./routes/workout_plan');
-const workouteventRouter = require('./routes/workout_events')
+const workoutCycleRouter = require('./routes/workoutCycles');
+const workouteventRouter = require('./routes/workoutEvents')
+const trainingdayRouter = require('./routes/trainingDays')
 
 //Endpoints
-app.use('/workoutplan/event', workouteventRouter)
+app.use('/users', userRouter)
+app.use('/training-days', trainingdayRouter)
+app.use('/workout-events', workouteventRouter)
+app.use('/workout-cycles', workoutCycleRouter)
 app.use('/musclegroups', muscleGroupRouter)
-app.use('/workoutplan', workoutplanRouter)
+
 
 
 app.listen(port, () => console.log(`App listening on port ${port}`))
