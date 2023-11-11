@@ -33,7 +33,7 @@ export default function Dashboard() {
   }, []);
 
   const { user } = useUser();
-  const firstName = user.firstName //user.id for id
+  const firstName = user.id//user.id for id
 
   return (
     <div>

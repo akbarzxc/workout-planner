@@ -13,8 +13,8 @@ app.use(morgan)
 app.use(ClerkExpressRequireAuth());
 
 //Routers
-const userRouter = require('./routes/user')
-const muscleGroupRouter = require('./routes/muscleGroup');
+const userRouter = require('./routes/users')
+const muscleGroupRouter = require('./routes/muscleGroups');
 const workoutCycleRouter = require('./routes/workoutCycles');
 const workouteventRouter = require('./routes/workoutEvents')
 const trainingdayRouter = require('./routes/trainingDays')
