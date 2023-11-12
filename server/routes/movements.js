@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db')
 
+
+//Note: For the time being all movements are shared among users, we can change this later if time/needed
+
+// GET http://localhost:3001/movements
+// For fetching all movements (for a list of adding movements to a workout etc)
 router.get('/', async (req, res) => {
 
     try {
@@ -26,6 +31,8 @@ router.get('/', async (req, res) => {
     }
 })
 
+//POST http://localhost:3001/movements
+//for creating a movement (for example Bench press for Chest)
 router.post('/', async (req, res) => {
     const { name, description, muscle_group_id } = req.body;
 
@@ -48,6 +55,8 @@ router.post('/', async (req, res) => {
     }
 });
 
+//PUT http://localhost:3001/movements/:movement_id
+//For updating the name and muscle group for a movement
 router.put('/:movement_id', async (req, res) => {
     const { movement_id } = req.params;
     const { name, muscle_group_id } = req.body;
@@ -69,5 +78,8 @@ router.put('/:movement_id', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+//DELETE http://localhost:3001/movements/:movement_id
+//For deleting a movement. Not yet implemented.
 
 module.exports = router;

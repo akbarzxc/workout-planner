@@ -2,11 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-//TrainingDays resource: 
-//Consists of toggling rest day to true or false 
-//and creating new events
 
 //PUT http://localhost:3001/training-days/:training_day_id
+//For toggling a training day to rest or not
 router.put('/:training_day_id', async (req, res) => {
   const { training_day_id } = req.params;
   const { is_rest_day } = req.body;
@@ -35,9 +33,8 @@ router.put('/:training_day_id', async (req, res) => {
   }
 });
 
-//POST http://localhost:3001/training-days/:training_day/workout-events
-//create a new workout_event for workout_day
-//create the logic for order_in_day in frontend
+//POST http://localhost:3001/training-days/:training_day_id/workout-events
+//create a new workout_event for workout_day. Create the logic for ordering in frontend how you wish
 router.post('/:training_day_id/workout-events', async (req, res) => {
   const { training_day_id } = req.params;
   const { name, order_in_day } = req.body;
@@ -64,6 +61,7 @@ router.post('/:training_day_id/workout-events', async (req, res) => {
 
 //AKBAR: 
 //GET http://localhost:3001/training-days/:training_day_id/workout-events
+//Fetch the workout events for this training day
 
 
 module.exports = router;

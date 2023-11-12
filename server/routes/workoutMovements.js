@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db')
 
+//PUT http://localhost:3001/workout-movements/:relation_id
+//Update the sets, reps or change movement for a workout movement
 router.put('/:relation_id', async (req, res) => {
     const { relation_id } = req.params;
     const { sets, reps, movement_id } = req.body;
@@ -19,6 +21,8 @@ router.put('/:relation_id', async (req, res) => {
     }
 });
 
+//DELETE http://localhost:3001/workout-movements/:relation_id
+//Remove a workout from an event
 router.delete('/:relation_id', async (req, res) => {
     const { relation_id } = req.params;
 

@@ -2,11 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-//WorkoutCycles resource
-//Consists of getting the data of a whole workout cycle (cycle details, training days, workout events)
-//and changing name of a cycle
-
 //GET http://localhost:3001/workout-cycles/:cycle_id
+//Fetching lots of data for workout plan view: the cycle details,
+//training days, workout events and summary of worked muscle groups per event
 router.get('/:cycle_id', async (req, res) => {
   const { cycle_id } = req.params;
 
@@ -85,8 +83,5 @@ router.put('/:cycle_id', async (req, res) => {
         res.status(500).send('Internal Server Error');
       }
     });
-
-
-
 
 module.exports = router;

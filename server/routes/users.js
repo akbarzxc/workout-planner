@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../db');
 
 //GET http://localhost:3001/users/:user_id/workout-cycle
-//Get the users workout cycle. If one does not exist, create one 
+//Get the users workout cycle id. If one does not exist, create the cycle with rest days
 router.get('/:user_id/workout-cycle', async (req, res) => {
     try {
         const { user_id } = req.params;
@@ -33,5 +33,6 @@ router.get('/:user_id/workout-cycle', async (req, res) => {
 
 
 //DELETE http://localhost:3001/users/:user_id
+//For deleting user related data. Not yet implemented.
 
 module.exports = router;

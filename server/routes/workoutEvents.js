@@ -35,6 +35,7 @@ const db = require('../db')
   });
 
   //DELETE http://localhost:3001/workout-events/:event_id
+  //To remove a certain event
   router.delete('/:event_id', async (req, res) => {
     const { event_id } = req.params;
   
@@ -57,6 +58,8 @@ const db = require('../db')
     }
   });
 
+  //GET http://localhost:3001/workout-events/:event_id/workout-movements
+  //Get the workout movements for a certain workout event
   router.get('/:event_id/workout-movements', async (req, res) => {
     const { event_id }= req.params;
 
@@ -82,6 +85,8 @@ const db = require('../db')
     }
 });
 
+//POST http://localhost:3001/workout-events/:event_id/workout-movements
+//For creating a workout movement for a given event
 router.post('/:event_id/workout-movements', async (req, res) => {
   const { event_id } = req.params;
   const { sets, reps, movement_id } = req.body;
