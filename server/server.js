@@ -13,18 +13,22 @@ app.use(morgan)
 app.use(ClerkExpressRequireAuth());
 
 //Routers
-const userRouter = require('./routes/users')
-const muscleGroupRouter = require('./routes/muscleGroups');
-const workoutCycleRouter = require('./routes/workoutCycles');
-const workouteventRouter = require('./routes/workoutEvents')
-const trainingdayRouter = require('./routes/trainingDays')
+const usersRouter = require('./routes/users')
+const muscleGroupsRouter = require('./routes/muscleGroups');
+const workoutCyclesRouter = require('./routes/workoutCycles');
+const workoutEventsRouter = require('./routes/workoutEvents')
+const trainingDaysRouter = require('./routes/trainingDays')
+const movementsRouter = require('./routes/movements')
+const workoutMovementsRouter = require('./routes/workoutMovements')
 
 //Endpoints
-app.use('/users', userRouter)
-app.use('/training-days', trainingdayRouter)
-app.use('/workout-events', workouteventRouter)
-app.use('/workout-cycles', workoutCycleRouter)
-app.use('/musclegroups', muscleGroupRouter)
+app.use('/users', usersRouter)
+app.use('/training-days', trainingDaysRouter)
+app.use('/workout-events', workoutEventsRouter)
+app.use('/workout-cycles', workoutCyclesRouter)
+app.use('/musclegroups', muscleGroupsRouter)
+app.use('/movements', movementsRouter)
+app.use('/workout-movements', workoutMovementsRouter)
 
 
 

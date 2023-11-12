@@ -56,6 +56,49 @@ const db = require('../db')
       res.status(500).send('Internal Server Error');
     }
   });
+
+  router.get('/:event_id/workout-movements', async (req, res) => {
+    const { event_id }= req.params;
+
+    try {
+        const results = await db.query(`
+        SELECT 
+            mtw.*, m.*, wam.muscle_group_id, mg.name
+        FROM 
+            movement_trained_in_workout mtw
+        INNER JOIN 
+            movements m ON mtw.movement_id = m.movement_id
+        INNER JOIN 
+            workout_affects_muscle wam ON m.movement_id = wam.movement_id
+        INNER JOIN
+            muscle_group mg ON wam.muscle_group_id = mg.muscle_group_id
+        WHERE 
+            mtw.event_id = $1;
+    `, [event_id]);
+        res.json(results.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
+router.post('/:event_id/workout-movements', async (req, res) => {
+  const { event_id } = req.params;
+  const { sets, reps, movement_id } = req.body;
+
+  if (!sets || !reps || !movement_id) {
+      return res.status(400).send('Sets, reps, and movement ID are required');
+  }
+
+  try {
+      const result = await db.query(`INSERT INTO movement_trained_in_workout (event_id, sets, reps, movement_id) VALUES ($1, $2, $3, $4) RETURNING *;`, [event_id, sets, reps, movement_id]);
+      const newMovementTrainedInWorkout = result.rows[0];
+      res.status(201).json(newMovementTrainedInWorkout);
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Server Error');
+  }
+});
   
   module.exports = router;
 

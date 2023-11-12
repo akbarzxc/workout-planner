@@ -16,11 +16,11 @@ router.get('/:cycle_id', async (req, res) => {
     let workoutDays = [];
     let statusCode = 200;
 
-    const trainingDaysResult = await db.query('SELECT * FROM training_day WHERE cycle_id = $1', [workoutCycle.cycle_id]);
+    const trainingDaysResult = await db.query('SELECT * FROM training_day WHERE cycle_id = $1 ORDER BY training_day_id', [workoutCycle.cycle_id]);
     workoutDays = trainingDaysResult.rows;
 
     for (const day of workoutDays) {
-      const eventsResult = await db.query('SELECT * FROM workout_event WHERE training_day_id = $1', [day.training_day_id]);
+      const eventsResult = await db.query('SELECT * FROM workout_event WHERE training_day_id = $1 ORDER BY event_id', [day.training_day_id]);
       day.workout_events = eventsResult.rows;
 
       for (const event of day.workout_events) {
