@@ -1,2 +1,3 @@
 .vscode/
 /workout-planner.session.sql
+*.http

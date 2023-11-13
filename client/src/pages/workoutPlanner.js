@@ -3,11 +3,39 @@ import { Link } from "react-router-dom";
 import WorkoutCycle from "../components/workout-planner/workoutCycle";
 import { Rewind } from "lucide-react";
 
-var test_props = {
-  name: "My Workout Plan",
-};
+import muscleGroupService from "../services/muscleGroupService";
+import workoutCycleService from "../services/workoutCycleService";
 
 export default function WorkoutPlanner() {
+  const [muscleGroups, setMuscleGroups] = useState([]);
+  const [workoutCycle, setWorkoutCycle] = useState(null);
+  const [error, setError] = useState(null);
+
+  const { getToken } = useAuth();
+  const { user } = useClerk();
+  const muscleService = muscleGroupService();
+  const cycleService = workoutCycleService();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await getToken();
+        const muscleGroupData = await muscleService.getMuscleGroups(token);
+        const workoutCycleData = await cycleService.getWorkoutCycle(
+          token,
+          user.id
+        );
+        console.log(workoutCycleData.name);
+        setMuscleGroups(muscleGroupData);
+        setWorkoutCycle(workoutCycleData);
+      } catch (err) {
+        setError(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="min-h-screen mx-auto flex flex-col items-center gap-4 sm:w-[100%] md:w-[90%] lg:w-[80%]">
       <div className="flex w-full items-center justify-between py-4 space-x-20">

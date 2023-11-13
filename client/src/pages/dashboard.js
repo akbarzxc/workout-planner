@@ -32,8 +32,8 @@ export default function Dashboard() {
     fetchUserToken();
   }, []);
 
-  const { user } = useUser()
-  const firstName = user.firstName //user.id for id
+  const { user } = useUser();
+  const firstName = user.id//user.id for id
 
   return (
     <div>
