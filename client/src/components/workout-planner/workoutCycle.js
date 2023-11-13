@@ -1,21 +1,31 @@
 import React from "react";
 import WorkoutEvent from "./workoutEvent";
 
-// var props = [0, 1, 2, 3];
+import workoutCycleService from "../../services/workoutCycleService";
+import { useQuery } from "react-query";
+import { useAuth } from "@clerk/clerk-react";
 
-var event_test_props = {
-  name: "Monday",
-  is_rest_day: false,
-};
-var rest_event_test_props = {
-  name: "Tuesday",
-  is_rest_day: true,
-};
 export default function WorkoutCycle() {
+  const { userId, getToken } = useAuth();
+
+  const cycleService = workoutCycleService();
+
+  const fetchWorkoutCycle = async () => {
+    const token = await getToken();
+    return cycleService.getWorkoutCycle(token, userId);
+  };
+
+  const query = useQuery("workoutCycle", fetchWorkoutCycle);
+  console.log(query);
   return (
     <div className="flex flex-row min-w-full justify-center space-x-4 border-b py-8 border-b-slate-400">
-      <WorkoutEvent {...event_test_props} />
-      <WorkoutEvent {...rest_event_test_props} />
+      {query.isLoading ? (
+        <div>Workout days loading</div>
+      ) : (
+        query.data?.workout_days.map((workout_day) => (
+          <WorkoutEvent key={workout_day.training_day_id} event={workout_day} />
+        ))
+      )}
     </div>
   );
 }
