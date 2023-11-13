@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useClerk, useAuth } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import WorkoutCycle from "../components/workout-planner/workoutCycle";
 import { Rewind } from "lucide-react";
@@ -48,7 +49,7 @@ export default function WorkoutPlanner() {
             <div className="px-4 text-lg text-slate-500">Back</div>
           </Link>
           <h1 className="text-4xl whitespace-nowrap font-bold text-slate-700">
-            {test_props.name}
+            test_props.name
           </h1>
         </div>
         <div className="flex w-3/5 justify-end space-x-10">
@@ -58,6 +59,17 @@ export default function WorkoutPlanner() {
         </div>
       </div>
       <WorkoutCycle />
+      <div>
+        <h1>Workout Planner</h1>
+        <Link to="../dashboard">Click to view dashboard</Link>
+        <h1>Your workout cycle {workoutCycle?.name}</h1>
+        <h2>Choose your target muscle groups:</h2>
+        <ul>
+          {muscleGroups?.map((muscleGroup) => (
+            <li key={muscleGroup.muscle_group_id}>{muscleGroup.name}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
