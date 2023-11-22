@@ -4,6 +4,11 @@ const db = require('../db');
 
 //GET http://localhost:3001/users/:user_id/workout-cycle
 //Get the users workout cycle id. If one does not exist, create the cycle with rest days
+/*
+{
+  "cycle_id": 9
+}
+*/
 router.get('/:user_id/workout-cycle', async (req, res) => {
     try {
         const { user_id } = req.params;

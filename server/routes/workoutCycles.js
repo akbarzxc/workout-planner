@@ -3,8 +3,50 @@ const router = express.Router();
 const db = require('../db');
 
 //GET http://localhost:3001/workout-cycles/:cycle_id
-//Fetching lots of data for workout plan view: the cycle details,
-//training days, workout events and summary of worked muscle groups per event
+//Fetching lots of data for workout plan view: the cycle name, training (and rest) days, workout events and the worked muscle groups per event
+/*
+{
+  "cycle_id": 8,
+  "user_id": "user_2Wtl6nOCJyyfUWDGkrGTPCAsGdZ",
+  "name": "Markuksen cycle",
+  "workout_days": [
+    {
+      "training_day_id": 29,
+      "is_rest_day": false,
+      "order_in_cycle": 1,
+      "cycle_id": 8,
+      "workout_events": [
+        {
+          "event_id": 1,
+          "name": "Push workout",
+          "training_day_id": 29,
+          "order_in_day": 1,
+          "muscle_groups": [
+            {
+              "muscle_group_id": 4,
+              "name": "Triceps"
+            },
+            {
+              "muscle_group_id": 2,
+              "name": "Chest"
+            }
+          ]
+        },
+        {
+          "event_id": 4,
+          "name": "Empty second workout event",
+          "training_day_id": 29,
+          "order_in_day": 2,
+          "muscle_groups": []
+        }
+      ]
+    }, 
+
+    ...
+
+  ]
+}
+*/
 router.get('/:cycle_id', async (req, res) => {
   const { cycle_id } = req.params;
 
@@ -85,8 +127,31 @@ router.put('/:cycle_id', async (req, res) => {
     });
 
 //GET http://localhost:3001/workout-cycles/:cycle_id/volume-feedback
-//To get the weekly volume. Result is an array of muscle_groups with id, name, weekly volume and a tag (correct/low/high)
-
+//To get the weekly volume. Result is an array of muscle_groups with id, name, weekly volume and a tag (correct/low/high).
+// 10-20 REPS is the correct weekly volume
+/*
+[
+  {
+    "muscle_group_id": 1,
+    "name": "Back",
+    "total_sets": "6",
+    "tag": "low"
+  },
+  {
+    "muscle_group_id": 2,
+    "name": "Chest",
+    "total_sets": "13",
+    "tag": "correct"
+  },
+  {
+    "muscle_group_id": 3,
+    "name": "Biceps",
+    "total_sets": "23",
+    "tag": "high"
+  },
+  ...
+]
+*/ 
 router.get('/:cycle_id/volume-feedback', async (req, res) => {
   try {
       const { cycle_id } = req.params;
@@ -118,7 +183,22 @@ router.get('/:cycle_id/volume-feedback', async (req, res) => {
 
 
 //GET http://localhost:3001/workout-cycles/:cycle_id/musclegroup-rest-feedback
-//Get an array of musclegroups and for each musclegroup a boolean field that indicates if there are back-to-back training sessions
+//Get an array of musclegroups and for each musclegroup a boolean field that indicates if there are no back-to-back training sessions
+/* 
+[
+  {
+    "muscle_group_id": 1,
+    "name": "Back",
+    "enough_rest": true
+  },
+  {
+    "muscle_group_id": 2,
+    "name": "Chest",
+    "enough_rest": false
+  },
+  ...
+]
+*/
 router.get('/:cycle_id/musclegroup-rest-feedback', async (req, res) => {
   const { cycle_id } = req.params;
 
