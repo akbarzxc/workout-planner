@@ -66,7 +66,7 @@ const db = require('../db')
     try {
         const results = await db.query(`
         SELECT 
-            mtw.*, m.*, wam.muscle_group_id, mg.name
+            mtw.*, m.name as movement_name, m.*, wam.muscle_group_id, mg.name
         FROM 
             movement_trained_in_workout mtw
         INNER JOIN 
