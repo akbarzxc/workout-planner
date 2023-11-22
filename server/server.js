@@ -20,6 +20,7 @@ const workoutEventsRouter = require('./routes/workoutEvents')
 const trainingDaysRouter = require('./routes/trainingDays')
 const movementsRouter = require('./routes/movements')
 const workoutMovementsRouter = require('./routes/workoutMovements')
+const selectedMuscleGroupsRouter = require('./routes/selectedMuscleGroups')
 
 //Endpoints
 app.use('/users', usersRouter)
@@ -29,6 +30,7 @@ app.use('/workout-cycles', workoutCyclesRouter)
 app.use('/musclegroups', muscleGroupsRouter)
 app.use('/movements', movementsRouter)
 app.use('/workout-movements', workoutMovementsRouter)
+app.use('/selected-muscle-groups', selectedMuscleGroupsRouter)
 
 
 

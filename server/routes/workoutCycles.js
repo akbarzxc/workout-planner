@@ -84,4 +84,45 @@ router.put('/:cycle_id', async (req, res) => {
       }
     });
 
+// POST http://localhost:3001/workout-cycles/:cycle_id/selected-muscle-groups
+// Create a new target muscle group. is_priority = true means muscle group is focus and is_priority = false means that it still is trained
+    router.post('/:cycle_id/selected-muscle-groups', async (req, res) => {
+      try {
+          const { cycle_id } = req.params;
+          const { is_priority, muscle_group_id } = req.body;
+          const newEntry = await db.query('INSERT INTO selected_muscle_group (cycle_id, is_priority, muscle_group_id) VALUES ($1, $2, $3) RETURNING *', [cycle_id, is_priority, muscle_group_id]);
+          res.status(201).json(newEntry.rows[0]);
+      } catch (err) {
+          console.error(err.message);
+          res.status(500).send('Server error');
+      }
+  });
+
+
+  //GET http://localhost:3001/workout-cycles/:cycle_id/selected-muscle-groups
+  //To fetch all selected muscle groups, separated whether they are in priority or not
+  router.get('/:cycle_id/selected-muscle-groups', async (req, res) => {
+    try {
+        const { cycle_id } = req.params;
+
+        const selectedResults = await db.query(`SELECT smg.*, mg.name FROM selected_muscle_group smg JOIN muscle_group mg ON smg.muscle_group_id = mg.muscle_group_id WHERE smg.cycle_id = $1`,  [cycle_id]);
+        const allMuscleGroups = await db.query(`SELECT * FROM muscle_group`);
+
+        const selectedIds = new Set(selectedResults.rows.map(row => row.muscle_group_id));
+        const notSelected = allMuscleGroups.rows.filter(mg => !selectedIds.has(mg.muscle_group_id));
+
+        const isPriority = selectedResults.rows.filter(row => row.is_priority);
+        const isNotPriority = selectedResults.rows.filter(row => !row.is_priority);
+
+        res.status(200).json({
+            is_priority: isPriority,
+            is_regular_priority: isNotPriority,
+            not_selected: notSelected
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports = router;
