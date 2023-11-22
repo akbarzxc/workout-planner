@@ -117,6 +117,63 @@ router.get('/:cycle_id/volume-feedback', async (req, res) => {
 });
 
 
-//GET http://localhost:3001/workout-cycles/:cycle_id/restday-feedback
+//GET http://localhost:3001/workout-cycles/:cycle_id/musclegroup-rest-feedback
+//Get an array of musclegroups and for each musclegroup a boolean field that indicates if there are back-to-back training sessions
+router.get('/:cycle_id/musclegroup-rest-feedback', async (req, res) => {
+  const { cycle_id } = req.params;
 
+  try {
+    const muscleGroupsResult = await db.query(`SELECT DISTINCT muscle_group.muscle_group_id, muscle_group.name FROM muscle_group`);
+    let muscleGroups = muscleGroupsResult.rows.map(mg => ({ ...mg, enough_rest: true }));
+
+    const trainingDaysResult = await db.query(`
+      SELECT 
+        training_day.training_day_id, 
+        training_day.order_in_cycle, 
+        workout_affects_muscle.muscle_group_id
+      FROM 
+        training_day
+      JOIN workout_event ON training_day.training_day_id = workout_event.training_day_id
+      JOIN movement_trained_in_workout ON workout_event.event_id = movement_trained_in_workout.event_id
+      JOIN workout_affects_muscle ON movement_trained_in_workout.movement_id = workout_affects_muscle.movement_id
+      WHERE 
+        training_day.cycle_id = $1
+      ORDER BY 
+        training_day.order_in_cycle, training_day.training_day_id
+    `, [cycle_id]);
+
+    let dayMuscleGroups = {};
+    let lastDayMuscleGroups = new Set();
+
+    for (const day of trainingDaysResult.rows) {
+      if (!dayMuscleGroups[day.order_in_cycle]) {
+        dayMuscleGroups[day.order_in_cycle] = new Set();
+      }
+      dayMuscleGroups[day.order_in_cycle].add(day.muscle_group_id);
+
+      if (day.order_in_cycle === 7) {
+        lastDayMuscleGroups.add(day.muscle_group_id);
+      }
+    }
+
+    Object.keys(dayMuscleGroups).forEach(dayOrder => {
+      const currentDayMuscleGroups = dayMuscleGroups[dayOrder];
+      const previousDayMuscleGroups = dayMuscleGroups[dayOrder - 1] || (dayOrder == 1 ? lastDayMuscleGroups : new Set());
+
+      for (const mgId of currentDayMuscleGroups) {
+        if (previousDayMuscleGroups.has(mgId)) {
+          muscleGroups = muscleGroups.map(mg => 
+            mg.muscle_group_id === mgId ? { ...mg, enough_rest: false } : mg
+          );
+        }
+      }
+    });
+
+    muscleGroups.sort((a, b) => a.muscle_group_id - b.muscle_group_id);
+    res.json(muscleGroups);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+});
 module.exports = router;
