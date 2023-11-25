@@ -58,15 +58,32 @@ const db = require('../db')
     }
   });
 
-  //GET http://localhost:3001/workout-events/:event_id/workout-movements
-  //Get the workout movements for a certain workout event
-  router.get('/:event_id/workout-movements', async (req, res) => {
+//GET http://localhost:3001/workout-events/:event_id/workout-movements
+//Get the workout movements for a certain workout event
+/* 
+[
+  {
+    "relation_id": 17,
+    "event_id": 6,
+    "sets": 3,
+    "reps": 12,
+    "movement_id": 1,
+    "movement_name": "Pullup",
+    "user_id": null,
+    "name": "Back",
+    "description": null,
+    "muscle_group_id": 1
+  },
+  ...
+]
+*/
+router.get('/:event_id/workout-movements', async (req, res) => {
     const { event_id }= req.params;
 
     try {
         const results = await db.query(`
         SELECT 
-            mtw.*, m.*, wam.muscle_group_id, mg.name
+            mtw.*, m.name as movement_name, m.*, wam.muscle_group_id, mg.name
         FROM 
             movement_trained_in_workout mtw
         INNER JOIN 
