@@ -42,15 +42,15 @@ router.delete('/:user_id', async (req, res) => {
     const { user_id } = req.params;
   
     try {
-      await pool.query('BEGIN');
-      await pool.query('DELETE FROM movement_trained_in_workout USING workout_event WHERE workout_event.id = movement_trained_in_workout.event_id AND workout_event.training_day_id IN (SELECT id FROM training_day WHERE cycle_id IN (SELECT id FROM workout_cycle WHERE user_id = $1))', [user_id]);
-      await pool.query('DELETE FROM workout_event WHERE training_day_id IN (SELECT id FROM training_day WHERE cycle_id IN (SELECT id FROM workout_cycle WHERE user_id = $1))', [user_id]);
-      await pool.query('DELETE FROM training_day WHERE cycle_id IN (SELECT id FROM workout_cycle WHERE user_id = $1)', [user_id]);
-      await pool.query('DELETE FROM workout_cycle WHERE user_id = $1', [user_id]);
-      await pool.query('COMMIT');
+      await db.query('BEGIN');
+      await db.query('DELETE FROM movement_trained_in_workout USING workout_event WHERE workout_event.event_id = movement_trained_in_workout.event_id AND workout_event.training_day_id IN (SELECT training_day_id FROM training_day WHERE cycle_id IN (SELECT cycle_id FROM workout_cycle WHERE user_id = $1))', [user_id]);
+      await db.query('DELETE FROM workout_event WHERE training_day_id IN (SELECT training_day_id FROM training_day WHERE cycle_id IN (SELECT cycle_id FROM workout_cycle WHERE user_id = $1))', [user_id]);
+      await db.query('DELETE FROM training_day WHERE cycle_id IN (SELECT cycle_id FROM workout_cycle WHERE user_id = $1)', [user_id]);
+      await db.query('DELETE FROM workout_cycle WHERE user_id = $1', [user_id]);
+      await db.query('COMMIT');
       res.status(200).send(`User ${user_id} data deleted successfully.`);
     } catch (error) {
-      await pool.query('ROLLBACK');
+      await db.query('ROLLBACK');
       res.status(500).send(`Error deleting user: ${error}`);
     }
   });
