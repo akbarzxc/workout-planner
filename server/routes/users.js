@@ -38,7 +38,6 @@ router.get('/:user_id/workout-cycle', async (req, res) => {
 
 
 //DELETE http://localhost:3001/users/:user_id
-//For deleting user related data. Not yet implemented.
 router.delete('/:user_id', async (req, res) => {
     const { user_id } = req.params;
   
