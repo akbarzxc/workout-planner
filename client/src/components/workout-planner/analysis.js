@@ -22,7 +22,6 @@ export default function Analysis() {
   const analysisVolumeQuery = useQuery("volumeAnalysis", fetchVolumeAnalysis);
   const analysisRestQuery = useQuery("restAnalysis", fetchRestAnalysis);
 
-  console.log(analysisVolumeQuery.data);
   return (
     <>
       <Table>

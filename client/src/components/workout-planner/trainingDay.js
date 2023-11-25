@@ -83,7 +83,6 @@ export default function TrainingDay({ movements, training_day }) {
       ),
     };
     setTrainingDay(updatedDay);
-    InvalidateQueries();
   };
   if (trainingDay.is_rest_day) {
     return (
