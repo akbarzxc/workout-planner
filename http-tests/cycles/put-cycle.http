@@ -1,0 +1,8 @@
+
+PUT http://localhost:3001/workout-cycles/8
+Content-Type: application/json
+Authorization: Bearer ...
+
+{
+  "name": "Markuksen cycle"
+}

@@ -1,13 +1,20 @@
-import axios from 'axios'
-const BASE_URL = 'http://localhost:3001'
-//change BASE_URL later when deployed or something
+import api, { setSessionToken } from './api';
 
-const getMuscleGroups = async () => { 
-  try {
-  const response = await axios.get(`http://localhost:3001/musclegroups`)
-  return response.data
-  } catch(error) {
-    console.log('Error: ', error)
+const muscleGroupService = () => {
+  const getMuscleGroups = async (sessionToken) => { 
+    try {
+    setSessionToken(sessionToken)
+    const response = await api.get(`/musclegroups`);
+    return response.data
+
+    } catch(error) {
+      console.log('Error: ', error)
+    }
   }
-}
-export { getMuscleGroups }
+
+return { 
+  getMuscleGroups,
+  }
+};
+
+export default muscleGroupService 
