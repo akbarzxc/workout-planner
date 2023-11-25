@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db')
 
+//GET http://localhost:3001/musclegroups
+//For getting a list of musclegroups. used in creating a movement
 
 router.get('/', async (req, res) => {
   try {
