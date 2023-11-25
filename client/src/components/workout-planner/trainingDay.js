@@ -17,7 +17,7 @@ let dayNames = [
   "Saturday",
   "Sunday",
 ];
-export default function TrainingDay({ training_day }) {
+export default function TrainingDay({ movements, training_day }) {
   const [trainingDay, setTrainingDay] = useState(training_day);
   const { getToken } = useAuth();
   const dayService = trainingDayService();
@@ -91,6 +91,7 @@ export default function TrainingDay({ training_day }) {
               <WorkoutEvent
                 key={event.event_id}
                 event={event}
+                movements={movements}
                 DeleteEventState={DeleteEventState}
                 UpdateEventState={UpdateEventState}
               />
