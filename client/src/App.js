@@ -6,6 +6,7 @@ import {
   SignedOut,
   RedirectToSignIn,
 } from "@clerk/clerk-react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 
@@ -66,11 +67,15 @@ function ClerkProviderWithRoutes() {
   );
 }
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <BrowserRouter>
-      <ClerkProviderWithRoutes />
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ClerkProviderWithRoutes />
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 export default App;

@@ -1,20 +1,22 @@
-import api, { setSessionToken } from './api';
+import api, { setSessionToken } from "./api";
 
 const workoutCycleService = () => {
-  const getWorkoutCycle = async (sessionToken, userID) => { 
+  const getWorkoutCycle = async (sessionToken, userID) => {
     try {
-    setSessionToken(sessionToken)
-    const response = await api.get(`/workoutplan/cycle/${userID}`);
-    return response.data
-
-    } catch(error) {
-      console.log('Error: ', error)
+      setSessionToken(sessionToken);
+      const idResponse = await api.get(`/users/${userID}/workout-cycle`);
+      const response = await api.get(
+        `/workout-cycles/${idResponse.data.cycle_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error: ", error);
     }
-  }
+  };
 
-return { 
-  getWorkoutCycle,
-  }
+  return {
+    getWorkoutCycle,
+  };
 };
 
-export default workoutCycleService 
+export default workoutCycleService;
