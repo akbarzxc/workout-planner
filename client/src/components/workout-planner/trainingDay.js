@@ -54,7 +54,15 @@ export default function TrainingDay({ training_day }) {
     };
     setTrainingDay(updatedDay);
   };
-  console.log(trainingDay);
+  const UpdateEventState = (event) => {
+    var updatedDay = {
+      ...trainingDay,
+      workout_events: trainingDay.workout_events.map((workoutEvent) =>
+        workoutEvent.event_id === event.event_id ? event : workoutEvent
+      ),
+    };
+    setTrainingDay(updatedDay);
+  };
   if (trainingDay.is_rest_day) {
     return (
       <button
@@ -84,6 +92,7 @@ export default function TrainingDay({ training_day }) {
                 key={event.event_id}
                 event={event}
                 DeleteEventState={DeleteEventState}
+                UpdateEventState={UpdateEventState}
               />
             ))}
         </div>
