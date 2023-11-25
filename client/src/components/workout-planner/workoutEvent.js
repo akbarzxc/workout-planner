@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import workoutEventService from "../../services/workoutEventService";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import WorkoutMovement from "./workoutMovement";
 
-import { Modal, Table, TextInput } from "flowbite-react";
+import { Modal, Table } from "flowbite-react";
 
 export default function WorkoutEvent({
   event,
@@ -25,6 +24,20 @@ export default function WorkoutEvent({
   };
   const deleteMutation = useMutation(DeleteEvent);
 
+  const InvalidateQueries = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["workoutMovements" + event.event_id],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["workoutCycle"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["restAnalysis"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["volumeAnalysis"],
+    });
+  };
   const fetchWorkoutMovements = async () => {
     const token = await getToken();
     return eventService.getWorkoutEventMovements(token, event.event_id);
@@ -54,6 +67,7 @@ export default function WorkoutEvent({
     sets: "5",
     reps: "5",
   });
+
   const queryClient = useQueryClient();
   const movementMutation = useMutation({
     mutationFn: AddMovement,
@@ -88,11 +102,7 @@ export default function WorkoutEvent({
       );
     },
     // Always refetch after error or success:
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["workoutMovements" + event.event_id],
-      });
-    },
+    onSettled: InvalidateQueries,
   });
   const DeleteMovement = async (relation_id) => {
     const token = await getToken();
@@ -101,11 +111,7 @@ export default function WorkoutEvent({
   const movementDeleteMutation = useMutation({
     mutationFn: (relation_id) => DeleteMovement(relation_id),
     // Always refetch after error or success:
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["workoutMovements" + event.event_id],
-      });
-    },
+    onSettled: InvalidateQueries,
   });
   const UpdateName = (newName) => {
     var updated = {
@@ -130,13 +136,13 @@ export default function WorkoutEvent({
           <div className="flex flex-row justify-between border-none w-full text-left">
             <div className="w-3/4">{event.name}</div>
           </div>
-          <div>
-            {event.muscle_groups?.map((muscle_group, index) => (
-              <WorkoutMovement
-                key={muscle_group.muscle_group_id}
-                workoutMovement={muscle_group}
-              />
-            ))}
+          <div className="text-left">
+            {movementQuery.data
+              ?.map((movement) => movement.name)
+              .filter((v, i, self) => i === self.indexOf(v))
+              .map((muscle, index) => (
+                <div key={index}>{muscle}</div>
+              ))}
           </div>
         </button>
         <button

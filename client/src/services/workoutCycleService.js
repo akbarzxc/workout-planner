@@ -5,6 +5,7 @@ const workoutCycleService = () => {
     try {
       setSessionToken(sessionToken);
       const idResponse = await api.get(`/users/${userID}/workout-cycle`);
+      console.log(idResponse.data.cycle_id);
       const response = await api.get(
         `/workout-cycles/${idResponse.data.cycle_id}`
       );

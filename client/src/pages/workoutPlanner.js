@@ -6,6 +6,7 @@ import { Rewind } from "lucide-react";
 
 import muscleGroupService from "../services/muscleGroupService";
 import { useQuery } from "react-query";
+import Analysis from "../components/workout-planner/analysis";
 
 export default function WorkoutPlanner() {
   const { getToken } = useAuth();
@@ -41,18 +42,7 @@ export default function WorkoutPlanner() {
         </div>
       </div>
       <WorkoutCycle />
-      <div>
-        <h2>Choose your target muscle groups:</h2>
-        <ul>
-          {query.isLoading ? (
-            <div>Muscle groups loading</div>
-          ) : (
-            query.data?.map((muscleGroup) => (
-              <li key={muscleGroup.muscle_group_id}>{muscleGroup.name}</li>
-            ))
-          )}
-        </ul>
-      </div>
+      <Analysis />
     </div>
   );
 }

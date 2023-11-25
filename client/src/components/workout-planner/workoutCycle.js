@@ -25,6 +25,7 @@ export default function WorkoutCycle() {
 
   const cycleQuery = useQuery("workoutCycle", fetchWorkoutCycle);
   const movementQuery = useQuery("movements", fetchMovements);
+  console.log(cycleQuery.data);
   return (
     <div className="flex flex-row min-w-full justify-center space-x-4 border-b py-8 border-b-slate-400">
       {cycleQuery.isLoading || movementQuery.isLoading ? (

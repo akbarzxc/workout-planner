@@ -3,7 +3,7 @@ import { useState } from "react";
 import WorkoutEvent from "./workoutEvent";
 
 import { CalendarCheck, Plus, Sun } from "lucide-react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useAuth } from "@clerk/clerk-react";
 
 import trainingDayService from "../../services/trainingDayService";
@@ -21,6 +21,19 @@ export default function TrainingDay({ movements, training_day }) {
   const [trainingDay, setTrainingDay] = useState(training_day);
   const { getToken } = useAuth();
   const dayService = trainingDayService();
+  const queryClient = useQueryClient();
+
+  const InvalidateQueries = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["workoutCycle"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["restAnalysis"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["volumeAnalysis"],
+    });
+  };
 
   const ToggleIsRestDay = async () => {
     trainingDay.is_rest_day = !trainingDay.is_rest_day;
@@ -29,8 +42,11 @@ export default function TrainingDay({ movements, training_day }) {
     return dayService.putTrainingDay(token, trainingDay);
   };
 
-  const restDayMutation = useMutation(ToggleIsRestDay);
-
+  const restDayMutation = useMutation({
+    mutationFn: ToggleIsRestDay,
+    // Always refetch after error or success:
+    onSettled: InvalidateQueries,
+  });
   const CreateEvent = async () => {
     const token = await getToken();
     let response = await dayService.postTrainingDayEvent(
@@ -43,7 +59,11 @@ export default function TrainingDay({ movements, training_day }) {
     setTrainingDay(trainingDay);
   };
 
-  const addEventMutation = useMutation(CreateEvent);
+  const addEventMutation = useMutation({
+    mutationFn: CreateEvent,
+    // Always refetch after error or success:
+    onSettled: InvalidateQueries,
+  });
 
   const DeleteEventState = (event_id) => {
     var updatedDay = {
@@ -53,6 +73,7 @@ export default function TrainingDay({ movements, training_day }) {
       ),
     };
     setTrainingDay(updatedDay);
+    InvalidateQueries();
   };
   const UpdateEventState = (event) => {
     var updatedDay = {
@@ -62,6 +83,7 @@ export default function TrainingDay({ movements, training_day }) {
       ),
     };
     setTrainingDay(updatedDay);
+    InvalidateQueries();
   };
   if (trainingDay.is_rest_day) {
     return (
