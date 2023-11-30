@@ -191,6 +191,14 @@ export default function WorkoutEvent({
                 ))}
               </Table.Body>
             </Table>
+            <p><br></br>Add a movement</p>
+            <Table>
+              <Table.Head>
+                <Table.HeadCell>Movement</Table.HeadCell>
+                <Table.HeadCell>Reps</Table.HeadCell>
+                <Table.HeadCell>Sets</Table.HeadCell>
+              </Table.Head>
+            </Table>
             <div className="flex flex-row items-center text-slate-800 text-md space-x-2">
               <button
                 className="hover:text-slate-500"

@@ -156,22 +156,23 @@ router.get('/:cycle_id/volume-feedback', async (req, res) => {
   try {
       const { cycle_id } = req.params;
       const query = `
-          SELECT 
-              mg.muscle_group_id, 
-              mg.name, 
-              COALESCE(SUM(mtw.sets), 0) as total_sets,
-              CASE 
-                  WHEN COALESCE(SUM(mtw.sets), 0) BETWEEN 10 AND 20 THEN 'correct'
-                  WHEN COALESCE(SUM(mtw.sets), 0) < 10 THEN 'low'
-                  ELSE 'high'
-              END as tag
-          FROM muscle_group mg
-          LEFT JOIN workout_affects_muscle wam ON mg.muscle_group_id = wam.muscle_group_id
-          LEFT JOIN movement_trained_in_workout mtw ON wam.movement_id = mtw.movement_id
-          LEFT JOIN workout_event we ON mtw.event_id = we.event_id
-          LEFT JOIN training_day td ON we.training_day_id = td.training_day_id AND td.cycle_id = $1
-          GROUP BY mg.muscle_group_id, mg.name
-          ORDER BY mg.muscle_group_id
+      SELECT 
+        mg.muscle_group_id, 
+        mg.name, 
+        COALESCE(SUM(mtw.sets), 0) as total_sets,
+        CASE 
+          WHEN COALESCE(SUM(mtw.sets), 0) BETWEEN 10 AND 20 THEN 'correct'
+          WHEN COALESCE(SUM(mtw.sets), 0) < 10 THEN 'low'
+          ELSE 'high'
+        END as tag
+      FROM muscle_group mg
+      LEFT JOIN workout_affects_muscle wam ON mg.muscle_group_id = wam.muscle_group_id
+      LEFT JOIN movement_trained_in_workout mtw ON wam.movement_id = mtw.movement_id
+      LEFT JOIN workout_event we ON mtw.event_id = we.event_id
+      LEFT JOIN training_day td ON we.training_day_id = td.training_day_id
+      WHERE td.cycle_id = $1
+      GROUP BY mg.muscle_group_id, mg.name
+      ORDER BY mg.muscle_group_id;
       `;
       const results = await db.query(query, [cycle_id]);
       res.json(results.rows);
