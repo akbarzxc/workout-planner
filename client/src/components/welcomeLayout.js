@@ -13,6 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import React from "react";
 import { SignInButton } from "@clerk/clerk-react";
+import logo from "../voima_icon.png";
 
 export default function WelcomeLayout(props) {
   return (
@@ -20,7 +21,7 @@ export default function WelcomeLayout(props) {
       <header className="container sticky top-0 z-40 bg-white">
         <div className="flex h-16 items-center justify-between border-b border-b-slate-200 py-4">
           <div className="hidden items-center space-x-2 md:flex">
-            <span>LOGO</span>
+            <img src={logo} alt="logo" className="h-14" />
             <span className="hidden sm:inline-block text-lg font-bold">
               Voima
             </span>

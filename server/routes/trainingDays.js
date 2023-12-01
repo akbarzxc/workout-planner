@@ -58,10 +58,4 @@ router.post('/:training_day_id/workout-events', async (req, res) => {
   }
 });
 
-
-//AKBAR: 
-//GET http://localhost:3001/training-days/:training_day_id/workout-events
-//Fetch the workout events for this training day
-
-
 module.exports = router;
