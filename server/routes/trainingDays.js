@@ -59,51 +59,22 @@ router.post('/:training_day_id/workout-events', async (req, res) => {
 });
 
 
-// GET http://localhost:3001/training-days/:day_number
-// Fetch the workout events for a specific day of the week within a workout cycle
-
-
-router.get('/training-days/:day_number', async (req, res) => {
-  const { day_number } = req.params;
-
-  // Convert day_number to an integer. Expecting 1 (Monday) to 7 (Sunday)
-  const order_in_cycle = parseInt(day_number);
-
-  if (isNaN(order_in_cycle) || order_in_cycle < 1 || order_in_cycle > 7) {
-    return res.status(400).json({ error: 'Invalid day_number' });
-  }
+// GET http://localhost:3001/training-days/:training_day_id/workout-events
+// Fetch the workout events for a specific training day, ordered by order_in_day
+router.get('/:training_day_id/workout-events', async (req, res) => {
+  const { training_day_id } = req.params;
 
   try {
-    // Fetch the first (or only) workout cycle ID
-    const cycleResult = await db.query('SELECT cycle_id FROM workout_cycle LIMIT 1');
-    const cycleId = cycleResult.rows[0]?.cycle_id;
-
-    if (!cycleId) {
-      return res.status(404).json({ error: 'No workout cycle found' });
-    }
-
-    // Fetch the training day based on the order_in_cycle
-    const trainingDaysResult = await db.query(`
-      SELECT * FROM training_day 
-      WHERE cycle_id = $1 AND order_in_cycle = $2
-    `, [cycleId, order_in_cycle]);
-
-    const trainingDay = trainingDaysResult.rows[0];
-
-    if (!trainingDay) {
-      return res.status(404).json({ error: 'No training day found for the given day_number' });
-    }
-
-    // Fetch workout events for the training day
+    // Fetch workout events for the training day, ordered by order_in_day
     const eventsResult = await db.query(`
       SELECT * FROM workout_event 
       WHERE training_day_id = $1 
       ORDER BY order_in_day
-    `, [trainingDay.training_day_id]);
-
+    `, [training_day_id]);
     const workoutEvents = eventsResult.rows;
 
     for (const event of workoutEvents) {
+      // Query to get muscle groups
       const muscleGroupsResult = await db.query(`
         SELECT DISTINCT
           muscle_group.muscle_group_id,
@@ -111,53 +82,41 @@ router.get('/training-days/:day_number', async (req, res) => {
         FROM
           workout_event
         JOIN
-          movement_trained_in_workout
-          ON workout_event.event_id = movement_trained_in_workout.event_id
+          movement_trained_in_workout ON workout_event.event_id = movement_trained_in_workout.event_id
         JOIN
-          movements
-          ON movement_trained_in_workout.movement_id = movements.movement_id
+          movements ON movement_trained_in_workout.movement_id = movements.movement_id
         JOIN
-          workout_affects_muscle
-          ON movements.movement_id = workout_affects_muscle.movement_id
+          workout_affects_muscle ON movements.movement_id = workout_affects_muscle.movement_id
         JOIN
-          muscle_group
-          ON workout_affects_muscle.muscle_group_id = muscle_group.muscle_group_id
+          muscle_group ON workout_affects_muscle.muscle_group_id = muscle_group.muscle_group_id
         WHERE
           workout_event.event_id = $1
       `, [event.event_id]);
-
       event.muscle_groups = muscleGroupsResult.rows;
 
+      // Query to get movements
       const movementsResult = await db.query(`
         SELECT 
           movement_trained_in_workout.*, 
-          movements.name AS movement_name,
-          workout_affects_muscle.muscle_group_id, 
-          muscle_group.name AS muscle_group_name
+          movements.name AS movement_name
         FROM 
           movement_trained_in_workout
         JOIN 
           movements ON movement_trained_in_workout.movement_id = movements.movement_id
-        JOIN 
-          workout_affects_muscle ON movements.movement_id = workout_affects_muscle.movement_id
-        JOIN
-          muscle_group ON workout_affects_muscle.muscle_group_id = muscle_group.muscle_group_id
         WHERE 
           movement_trained_in_workout.event_id = $1
       `, [event.event_id]);
-
-      event.movements = movementsResult.rows;
+      event.movements = movementsResult.rows.map(movement => ({
+        ...movement,
+      }));
     }
 
-    res.status(200).json({
-      ...trainingDay,
-      workout_events: workoutEvents
-    });
+    res.status(200).json(workoutEvents);
   } catch (err) {
-    console.error('Error fetching workout events for the day:', err);
-    res.status(500).send('Internal Server Error');
+    console.error('Error fetching workout events:', err);
+    res.status(500).send('Server error');
   }
 });
 
-
 module.exports = router;
+

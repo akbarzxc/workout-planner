@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useClerk, useUser, useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from 'react';
 
+import workoutCycleService from "../services/workoutCycleService";
+import trainingDayService from "../services/trainingDayService";
+
 import logo from "../voima_icon.png";
 import stt from "../setting_icon.png";
 import wrk from "../workout_icon.png";
@@ -120,37 +123,39 @@ export default function DashboardPage() {
         year: 'numeric'
     }).replace(/,\s+/g, ' ');
 
-    const { getToken } = useAuth();
-    const [userToken, setUserToken] = useState(null);
+
+    const { getToken, userId } = useAuth();
     const [todaysWorkouts, setTodaysWorkouts] = useState([]);
-
+    const dayService = trainingDayService();
+    const cycleService = workoutCycleService();
+  
     useEffect(() => {
-        const fetchUserToken = async () => {
+        const fetchTodaysWorkoutEvents = async () => {
+        try {
             const token = await getToken();
-            setUserToken(token);
-        };
-        fetchUserToken();
-    }, []);
+            // Fetch the user's workout cycle
+            const workoutCycle = await cycleService.getWorkoutCycle(token, userId);
 
-    useEffect(() => {
-        // Determine the current day of the week as a number (1 for Monday, 2 for Tuesday, etc.)
-        const currentDayNumber = new Date().getDay() || 7; // Convert Sunday (0) to 7
-    
-        if (userToken) {
-            fetch(`http://localhost:3001/training-days/${currentDayNumber}`, { 
-                headers: { 'Authorization': `Bearer ${userToken}` } 
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Checking if data.workout_events is present and not null
-                    setTodaysWorkouts(data.workout_events ?? []);
-                })
-                .catch(error => {
-                    console.error('Error fetching today\'s workout:', error);
-                });
+            // Determine the current day of the week
+            const today = new Date();
+            const orderInCycleToday = today.getDay() || 7; // Assuming 1 = Monday, 7 = Sunday
+
+            // Find today's training day ID
+            const todaysTrainingDay = workoutCycle.workout_days.find(day => day.order_in_cycle === orderInCycleToday);
+
+            if (todaysTrainingDay) {
+            // Fetch workout events for today's training day
+            const events = await dayService.getWorkoutEventsForDay(token, todaysTrainingDay.training_day_id);
+            setTodaysWorkouts(events);
+            }
+        } catch (error) {
+            console.error("Error fetching today's workout events:", error);
         }
-    }, [userToken]);
-    
+        };
+
+        fetchTodaysWorkoutEvents();
+    }, [userId]);
+        
 
     return (
         <div>
@@ -177,7 +182,7 @@ export default function DashboardPage() {
             </SideBar>
             <Main>
                 <div className="grid sm-grid-cols-1 gap-4">
-                
+                    
                     {todaysWorkouts.length > 0 ? (
                             <WorkoutBox workouts={todaysWorkouts} />
                         ) : (

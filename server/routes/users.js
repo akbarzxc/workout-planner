@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
+
 //GET http://localhost:3001/users/:user_id/workout-cycle
 //Get the users workout cycle id. If one does not exist, create the cycle with rest days
 /*

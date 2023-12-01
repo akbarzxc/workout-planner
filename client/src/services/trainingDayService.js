@@ -34,9 +34,19 @@ const trainingDayService = () => {
       console.log("Error: ", error);
     }
   };
+  const getWorkoutEventsForDay = async (sessionToken, training_day_id) => {
+    try {
+      setSessionToken(sessionToken);
+      const response = await api.get(`/training-days/${training_day_id}/workout-events`);
+      return response.data;
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
   return {
     putTrainingDay,
     postTrainingDayEvent,
+    getWorkoutEventsForDay,
   };
 };
 
