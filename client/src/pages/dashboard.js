@@ -137,7 +137,7 @@ export default function DashboardPage() {
         const currentDayNumber = new Date().getDay() || 7; // Convert Sunday (0) to 7
     
         if (userToken) {
-            fetch(`http://localhost:3001/workout-day/${currentDayNumber}`, { 
+            fetch(`http://localhost:3001/training-days/${currentDayNumber}`, { 
                 headers: { 'Authorization': `Bearer ${userToken}` } 
             })
                 .then(response => response.json())
@@ -151,9 +151,6 @@ export default function DashboardPage() {
         }
     }, [userToken]);
     
-    
-
-  
 
     return (
         <div>
