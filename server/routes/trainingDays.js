@@ -60,7 +60,103 @@ router.post('/:training_day_id/workout-events', async (req, res) => {
 
 
 // GET http://localhost:3001/training-days/:training_day_id/workout-events
-// Fetch the workout events for a specific training day, ordered by order_in_day
+// Fetch the workout events for a specific training day
+// Example from pre-populated data
+/**
+ * [
+{
+"event_id": 183,
+"name": "Upper workout",
+"training_day_id": 41,
+"order_in_day": 1,
+"muscle_groups": [
+{
+"muscle_group_id": 3,
+"name": "Biceps"
+},
+{
+"muscle_group_id": 4,
+"name": "Triceps"
+},
+{
+"muscle_group_id": 2,
+"name": "Chest"
+},
+{
+"muscle_group_id": 1,
+"name": "Back"
+},
+{
+"muscle_group_id": 5,
+"name": "Shoulders"
+},
+{
+"muscle_group_id": 8,
+"name": "Forearms"
+}
+],
+"movements": [
+{
+"relation_id": 270,
+"event_id": 183,
+"sets": 3,
+"reps": 12,
+"movement_id": 1,
+"movement_name": "Pullup"
+},
+{
+"relation_id": 268,
+"event_id": 183,
+"sets": 5,
+"reps": 5,
+"movement_id": 4,
+"movement_name": "Overhead Press"
+},
+{
+"relation_id": 273,
+"event_id": 183,
+"sets": 3,
+"reps": 10,
+"movement_id": 6,
+"movement_name": "Biceps curl"
+},
+{
+"relation_id": 274,
+"event_id": 183,
+"sets": 3,
+"reps": 10,
+"movement_id": 8,
+"movement_name": "Triceps Extension"
+},
+{
+"relation_id": 271,
+"event_id": 183,
+"sets": 2,
+"reps": 10,
+"movement_id": 12,
+"movement_name": "T-bar Row"
+},
+{
+"relation_id": 272,
+"event_id": 183,
+"sets": 2,
+"reps": 10,
+"movement_id": 17,
+"movement_name": "Forearm extension"
+},
+{
+"relation_id": 269,
+"event_id": 183,
+"sets": 3,
+"reps": 12,
+"movement_id": 14,
+"movement_name": "Incline Bench Press"
+}
+]
+}
+]
+ */
+
 router.get('/:training_day_id/workout-events', async (req, res) => {
   const { training_day_id } = req.params;
 
