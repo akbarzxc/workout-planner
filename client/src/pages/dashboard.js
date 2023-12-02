@@ -30,7 +30,7 @@ const SignOutButton = () => {
 
 function WorkoutBox({ workouts }) {
     return (
-        <div className="rounded-3xl bg-orange-200 w-full mt-10 p-5">
+        <div className="rounded-3xl bg-orange-200 max-w-lg mt-10 p-5">
             {workouts.map((workout, index) => (
                 <div key={index} className="mb-4">
                     <h2 className="text-lg font-bold">{workout.name}</h2>
