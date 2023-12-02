@@ -11,3 +11,7 @@ coverage
 
 # Benchmarking
 benchmarks/graphs
+
+server/viewCycle.js
+server/viewmove.js
+server/viewTrainingday.js
