@@ -7,6 +7,7 @@ import { Cog, CalendarClock } from 'lucide-react';
 
 import workoutCycleService from "../services/workoutCycleService";
 import trainingDayService from "../services/trainingDayService";
+import userService from "../services/userService";
 
 import logo from "../voima_icon.png";
 
@@ -119,9 +120,25 @@ export default function DashboardPage() {
 
     const { getToken, userId } = useAuth();
     const [todaysWorkouts, setTodaysWorkouts] = useState([]);
+
+    const userServices = userService();
     const dayService = trainingDayService();
     const cycleService = workoutCycleService();
-  
+    
+    const navigate = useNavigate();
+    const { signOut } = useClerk();
+    
+    const handleDeleteUser = async () => {
+        try {
+          const token = await getToken();
+          await userServices.deleteUser(token, userId);
+          signOut();
+          navigate("/");
+        } catch (error) {
+          console.error("Error deleting the user account:", error);
+        }
+      };
+
     useEffect(() => {
         const fetchTodaysWorkoutEvents = async () => {
         try {
@@ -188,6 +205,7 @@ export default function DashboardPage() {
                         <p>ACCOUNT</p>
                         <div className="mt-4">
                             <button 
+                            onClick={handleDeleteUser}
                             className="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
                             >
                             Delete User
