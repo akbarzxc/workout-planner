@@ -1,14 +1,14 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useClerk, useUser, useAuth } from "@clerk/clerk-react";
+import { useClerk, useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from 'react';
+import { Modal } from 'flowbite-react';
+import { Cog, CalendarClock } from 'lucide-react';
 
 import workoutCycleService from "../services/workoutCycleService";
 import trainingDayService from "../services/trainingDayService";
 
 import logo from "../voima_icon.png";
-import stt from "../setting_icon.png";
-import wrk from "../workout_icon.png";
 
 
 const SignOutButton = () => {
@@ -76,17 +76,6 @@ function WorkoutBox({ workouts }) {
 }
 
 
-
-function Button({value, src, to}) {
-    return (
-        <Link className="hover:bg-gray-200 bg-yellow flex flex-row" to={to}>
-            <img src={src} className="h-5 w-5"></img>
-            <h1 className="pl-3">{value}</h1>
-        </Link>
-    );
-}
-
-
 function SideBar({ children }) {
     return (
         <div className="fixed top-16 w-80 bg-white h-screen pl-40 py-3 border-r-2">
@@ -115,6 +104,8 @@ function Main({ children }) {
 
 
 export default function DashboardPage() {
+
+
     let currentDate = new Date()
     const formattedDate = currentDate.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -123,6 +114,8 @@ export default function DashboardPage() {
         year: 'numeric'
     }).replace(/,\s+/g, ' ');
 
+
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const { getToken, userId } = useAuth();
     const [todaysWorkouts, setTodaysWorkouts] = useState([]);
@@ -160,13 +153,12 @@ export default function DashboardPage() {
     return (
         <div>
             <Header>
-                <Link to="/" class="hidden items-center space-x-2 md:flex">
+                <div class="hidden items-center space-x-2 md:flex">
                     <img src={logo} alt="logo" className="h-14" />
                     <h1 className="hidden sm:inline-block text-lg font-bold">
                         Voima
                     </h1>
-                </Link>
-                <SignOutButton />
+                </div>
             </Header>
             <div class=" fixed bg-white w-screen h-20 top-16 ml-80 border-b-2">
                 <div className="pl-11">
@@ -175,10 +167,39 @@ export default function DashboardPage() {
                 </div>
             </div>
             <SideBar>
-                
-                <Button value={"Workout Plan"} src={wrk} to={"/workoutplan"} / >
-                <Button value={"Settings"} src={stt} to={"/settings"} />
-
+                <Link to="/workoutplan" className="flex flex-row hover:bg-gray-200 w-full">
+                    <CalendarClock className="h-5 w-5" />
+                    <span className="pl-3">Workout Plan</span>
+                </Link>
+                <button 
+                onClick={() => setModalOpen(true)} 
+                className="flex flex-row hover:bg-gray-200 w-full"
+                >
+                <Cog className="h-5 w-5" />
+                <span className="pl-3">Settings</span>
+                </button>
+                {isModalOpen && (
+                    <Modal show={isModalOpen} onClose={() => setModalOpen(false)} centered>
+                    <Modal.Header>
+                        Settings
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="text-center">
+                        <p>ACCOUNT</p>
+                        <div className="mt-4">
+                            <button 
+                            className="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
+                            >
+                            Delete User
+                            </button>
+                        </div>
+                        <div className="mt-4">
+                            <SignOutButton />
+                        </div>
+                        </div>
+                    </Modal.Body>
+                    </Modal>
+                )}                
             </SideBar>
             <Main>
                 <div className="grid sm-grid-cols-1 gap-4">
@@ -192,8 +213,6 @@ export default function DashboardPage() {
                         )}
                 </div>
             </Main>
-            
-            
         </div>
     );
 }
